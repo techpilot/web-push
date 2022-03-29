@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -10,6 +11,15 @@ dotenv.config();
 
 app.use(cors());
 app.use(bodyParser.json());
+
+mongoose
+  .connect('mongodb://localhost:27017/webpush', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('DB connection successful'))
+  .catch((err) => console.log('ERROR'));
+
 // ###You can generate VAPID keys using the command:
 // **./node_modules/.bin/web-push generate-vapid-keys**
 webpush.setVapidDetails(
@@ -17,15 +27,6 @@ webpush.setVapidDetails(
   'BLapGzcZ734mHwipjuOpS47Be78p3gUwugAe9-YCr8hg2K663sTDcYW87CzZVsgdmB-Gv29jpHojiKumU6-fopo',
   'ay9VgURVcLgUe1iSytMyxmG0HE5EpEZ7dTYYnzOVOEs'
 );
-
-app.get('/', (req, res) => {
-  res.send('Hello world!');
-});
-
-app.post('/post', (req, res) => {
-  console.log('connected to react');
-  res.redirect('/');
-});
 
 app.post('/notifications/subscribe', (req, res) => {
   console.log(req.body);
